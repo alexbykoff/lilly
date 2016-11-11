@@ -1,0 +1,25 @@
+{
+  "name": "lilly",
+  "version": "0.0.1",
+  "description": "localStorage wrapper",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomkallen/lilly.git"
+  },
+  "author": "Alex Bykoff <comradebykoff@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomkallen/lilly/issues"
+  },
+  "homepage": "https://github.com/tomkallen/lilly#readme",
+  "devDependencies": {
+    "gulp": "3.9.1",
+    "gulp-typescript": "3.1.2",
+    "gulp-wrap-exports": "0.3.0",
+    "typescript": "2.0.9"
+  }
+}

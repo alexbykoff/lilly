@@ -4,7 +4,7 @@ export class Lilly {
     constructor(public name: string = ''){}
 
     // Attempt to establish a connection to local storage. If it is not available then return error.
-    connect(callback: any){
+    connect(callback: any) {
         try{
             localStorage.setItem("null","null");
             localStorage.removeItem("null");
@@ -27,4 +27,5 @@ export class Lilly {
     push(){}
     pull(){}
     destroy(){}
+    drop(){}
 }
