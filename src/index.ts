@@ -3,8 +3,8 @@ class Lilly {
     deny: Boolean = false;
     // Creating new instance of database with a name. Name becomes a prefix for database entries.
     constructor(public name: string = '', public access: string = '') {
-        if(this.name.length) this.name += '_';
-        if(this.access==='readonly') this.deny = true;
+        if (this.name.length) this.name += '_';
+        if (this.access === 'readonly') this.deny = true;
     }
 
     // Attempt to establish a connection to local storage. If it is not available then return error.
@@ -32,15 +32,16 @@ class Lilly {
     }
     find(key: string, fallback: any) {
         let data: any;
-        try{
-            data = JSON.parse(localStorage.getItem(this.name+key));
+        try {
+            data = JSON.parse(localStorage.getItem(this.name + key));
             console.log("Attempt to retreive", data);
-        }
-        catch(e){
+        } catch (e) {
             // If parse fails then parse it manually
             console.log("Parse fail. Objectifying the value");
-            if(localStorage[key]){
-                data = {_v: localStorage.getItem(key)}
+            if (localStorage[key]) {
+                data = {
+                    _v: localStorage.getItem(key)
+                }
             }
             // If no such data then fall back to default value
             else return fallback;
@@ -48,26 +49,25 @@ class Lilly {
 
         if (data === null) return fallback;
         // Doublecheck data integrity
-        if (typeof data ==='object' && data._v !== 'undefined'){
-             console.log("Structure Ok. Data is", data._v);             
-             return data._v;
+        if (typeof data === 'object' && data._v !== 'undefined') {
+            console.log("Structure Ok. Data is", data._v);
+            return data._v;
         }
         console.log("Not found, fallback");
         return fallback;
     }
 
-    findKeys(){
-            let localKeys: any[] = [];
-            let prefix = this.name;
-        try{
-             Object.keys(localStorage)
-                .map(v=>{
-                    if (v.substr(0, prefix.length) === prefix) {                        
+    findKeys() {
+        let localKeys: any[] = [];
+        let prefix = this.name;
+        try {
+            Object.keys(localStorage)
+                .map(v => {
+                    if (v.substr(0, prefix.length) === prefix) {
                         localKeys.push(v);
                     }
                 });
-        }
-        catch(e){
+        } catch (e) {
             console.log(e);
             return;
         }
@@ -75,29 +75,22 @@ class Lilly {
         return localKeys;
     }
 
-    findGlobalKeys(){
-        let globalKeys: any[] = [];
-        try {
-            Object.keys(localStorage)
-                .map(v=> globalKeys.push(v));
-        }
-        catch(e){
-            console.log(e);
-            return;
-        }
+    findGlobalKeys() {
 
-        return globalKeys;
+        return Object.keys(localStorage);
     }
 
     remove(key: string) {
         // This will silently terminate if no such data. No need to catch errors.
-        return localStorage.removeItem(this.name+key);
+        return localStorage.removeItem(this.name + key);
     }
     push() {}
     pull() {}
-    destroy() {}
+        
     drop() {
+        // Destroys all local storage data associated with this particular database.
+        // Keeps all other keys.
         let keys = this.findKeys();
-        keys.map(e=>localStorage.removeItem(e));
+        keys.map(e => localStorage.removeItem(e));
     }
 }
