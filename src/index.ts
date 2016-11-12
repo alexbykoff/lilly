@@ -1,4 +1,4 @@
-export class Lilly {
+class Lilly {
     
     // Creating new instance of database with a name. Name becomes a prefix for database entries.
     constructor(public name: string = ''){}
