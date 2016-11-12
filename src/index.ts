@@ -61,17 +61,32 @@ class Lilly {
             let prefix = this.name;
         try{
              Object.keys(localStorage)
-                .forEach(v=>{
-                    if (v.substr(0, prefix.length) === prefix) {
+                .map(v=>{
+                    if (v.substr(0, prefix.length) === prefix) {                        
                         localKeys.push(v);
                     }
                 });
         }
         catch(e){
+            console.log(e);
             return;
         }
-        
+
         return localKeys;
+    }
+
+    findGlobalKeys(){
+        let globalKeys: any[] = [];
+        try {
+            Object.keys(localStorage)
+                .map(v=> globalKeys.push(v));
+        }
+        catch(e){
+            console.log(e);
+            return;
+        }
+
+        return globalKeys;
     }
 
     remove(key: string) {
@@ -81,5 +96,8 @@ class Lilly {
     push() {}
     pull() {}
     destroy() {}
-    drop() {}
+    drop() {
+        let keys = this.findKeys();
+        keys.map(e=>localStorage.removeItem(e));
+    }
 }
