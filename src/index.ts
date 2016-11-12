@@ -28,14 +28,25 @@ class Lilly {
     read(key: string, fallback: any) {
         let data: any;
         try{
-            data = JSON.parse(localStorage.getItem(this.name));
+            data = JSON.parse(localStorage.getItem(this.name+key));
+            console.log("Successfully read", data);
         }
         catch(e){
             // If parse fails
-            localStorage[key]
+            console.log("Parse fail. Objectfying the value");
+            if(localStorage[key]){
+                data = {_v: localStorage.getItem(key)}
+            }
+            else return fallback;
         }
 
-        return data === null? fallback: data._v !== 'undefined'? data._v: fallback;
+        if (data === null) return fallback;
+        if (typeof data ==='object' && data._v !== 'undefined'){
+             console.log("Structure Ok. Data is", data._v);             
+             return data._v;
+        }
+        console.log("Not found, fallback")
+        return fallback;
     }
     remove() {}
     push() {}
