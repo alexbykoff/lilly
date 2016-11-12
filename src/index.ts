@@ -1,7 +1,9 @@
 class Lilly {
 
     // Creating new instance of database with a name. Name becomes a prefix for database entries.
-    constructor(public name: string = '') {}
+    constructor(public name: string = '') {
+        this.name += "_";
+    }
 
     // Attempt to establish a connection to local storage. If it is not available then return error.
     connect(callback: any) {
@@ -29,11 +31,11 @@ class Lilly {
         let data: any;
         try{
             data = JSON.parse(localStorage.getItem(this.name+key));
-            console.log("Successfully read", data);
+            console.log("Attempt to retreive", data);
         }
         catch(e){
             // If parse fails
-            console.log("Parse fail. Objectfying the value");
+            console.log("Parse fail. Objectifying the value");
             if(localStorage[key]){
                 data = {_v: localStorage.getItem(key)}
             }
