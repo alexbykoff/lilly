@@ -1,4 +1,4 @@
 {
     "typescript.tsdk": "./node_modules/typescript/lib",
-    "editor.wrappingColumn": 120
+    "editor.wrappingColumn": 140
 }
