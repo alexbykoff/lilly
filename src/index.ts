@@ -68,7 +68,9 @@ class Lilly {
         return fallback;
     }
 
-    // Returns an array of keys, associated with this instance of storage
+    // Returns an array of keys, associated with this instance of storage.
+    // Instanceing is based on the name argument of the Lilly class and thus
+    // on the prfixes of the keys saved to the storage. 
     findKeys() {
         let localKeys: any[] = [];
         let prefix = this.name;
@@ -80,13 +82,14 @@ class Lilly {
                     }
                 });
         } catch (e) {
-            console.log(e);
+            console && console.log(e);
             return;
         }
 
         return localKeys;
     }
 
+    // Returns an array of all the keys for the current local storage.
     findGlobalKeys() {
 
         return Object.keys(localStorage);
