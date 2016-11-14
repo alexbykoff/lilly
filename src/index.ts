@@ -33,7 +33,7 @@ class Lilly {
 
         // Stores the state  and restore point of the storage data.
         this.fixate();
-        
+
         return typeof callback == 'function' ? callback(null, true) : true;
     }
 
@@ -54,13 +54,13 @@ class Lilly {
     }
     
     // Looks for a key in a storage and checks its integrity.
-    // If values are not valid (for example - saved manually or by another script)
-    // Then method attempts to reconstuct data according to this library's format. 
+    // If values aren't valid (for example - saved manually or by another script)
+    // then attempts to reconstuct data according to this library's format. 
     find(key: any, fallback: any = undefined) {
 
         let data: any;
         try {
-            data = JSON.parse(localStorage.getItem(this.name + key));            
+            data = JSON.parse(localStorage.getItem(this.name + key));                                    
         } catch (e) {
             // If parse fails then parse it manually        
             if (localStorage[key]) {
@@ -116,7 +116,10 @@ class Lilly {
     push() {}
     pull() {}
     restore(){
-        if (!this.connected) return false;
+        if (!this.connected || !this.container) return false;
+        for (let item of this.container){
+            this.save(item[0],item[1]);
+        }
     }
     undo(){
         if (!this.connected) return false;
@@ -125,7 +128,9 @@ class Lilly {
     // Constructs a restore point for local storage data.
     // This method fires upon .connect() and also can be called manually.
     fixate(){
+
         if (!this.connected) return false;
+        this.container = [];
         let keys: any[] = this.findKeys();
         for (let key of keys){
             this.container.push([key,this.find(key)]);
@@ -142,6 +147,6 @@ class Lilly {
 
         if (this.readonly) return;
         let keys = this.findKeys();
-        keys.map(e => localStorage.removeItem(e));
+        keys.map(e => localStorage.removeItem(this.name + e));
     }
 }
