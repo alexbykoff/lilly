@@ -13,7 +13,7 @@ class Lilly {
     // Creates new instance of database with a name. 
     // Name becomes a prefix for database entries.
     constructor(public name: string = '', public access: string = '') {
-        this.name.length && (this.name += '_');
+        this.name.length ? this.name += '__': this.name = "__";
         this.access === 'readonly' && (this.readonly = true);
     }
 
@@ -28,7 +28,12 @@ class Lilly {
         } catch (e) {
             return typeof callback == 'function' ? callback(e) : false;
         }
+        // Sets state to 'connected' to use additional methods.
         this.connected = true;
+
+        // Stores the state  and restore point of the storage data.
+        this.fixate();
+        
         return typeof callback == 'function' ? callback(null, true) : true;
     }
 
@@ -51,7 +56,7 @@ class Lilly {
     // Looks for a key in a storage and checks its integrity.
     // If values are not valid (for example - saved manually or by another script)
     // Then method attempts to reconstuct data according to this library's format. 
-    find(key: string, fallback: any) {
+    find(key: any, fallback: any = undefined) {
 
         let data: any;
         try {
@@ -85,7 +90,7 @@ class Lilly {
             Object.keys(localStorage)
                 .map(v => {
                     if (v.substr(0, prefix.length) === prefix) {
-                        localKeys.push(v);
+                        localKeys.push(v.substr(prefix.length));
                     }
                 });
         } catch (e) {
@@ -116,8 +121,17 @@ class Lilly {
     undo(){
         if (!this.connected) return false;
     }
+    
+    // Constructs a restore point for local storage data.
+    // This method fires upon .connect() and also can be called manually.
     fixate(){
         if (!this.connected) return false;
+        let keys: any[] = this.findKeys();
+        for (let key of keys){
+            this.container.push([key,this.find(key)]);
+        }
+        console.log(this.container);
+        
     }
 
         
