@@ -1,28 +1,35 @@
 class Lilly {
 
-    // setting writing permissions
-    readonly: boolean = false;
+    // Sets writing permissions.
+    private readonly: boolean = false;
 
-    // container variable saves the state of the storage upon connection.
-    container: any[] = [];
+    // Stores connection state.
+    // Needed for `restore`, `undo`  and `fixate` methods.
+    private connected: boolean = false;
 
-    // Creating new instance of database with a name. Name becomes a prefix for database entries.
+    // Saves the state of the storage upon connection.
+    private container: any[] = [];
+
+    // Creates new instance of database with a name. 
+    // Name becomes a prefix for database entries.
     constructor(public name: string = '', public access: string = '') {
-        if (this.name.length) this.name += '_';
-        if (this.access === 'readonly') this.readonly = true;
+        this.name.length && (this.name += '_');
+        this.access === 'readonly' && (this.readonly = true);
     }
 
-    // Attempt to establish a connection to local storage. If it is not available then return error.
-    // If connection is successfull then callback is executed
+    // Attempts to establish a connection to local storage.
+    // If it is not available then returns error.
+    // If connection is successfull then callback is executed.
     connect(callback: any) {
 
         try {
             localStorage.setItem("null", "null");
-            localStorage.removeItem("null");
-            return typeof callback == 'function' ? callback(null, true) : true;
+            localStorage.removeItem("null");            
         } catch (e) {
             return typeof callback == 'function' ? callback(e) : false;
         }
+        this.connected = true;
+        return typeof callback == 'function' ? callback(null, true) : true;
     }
 
     // Saves data into storage in JSON object format.
@@ -90,7 +97,7 @@ class Lilly {
     }
 
     // Returns an array of all the keys for the current local storage.
-    findGlobalKeys() {
+    findGlobalKeys() : any[]{
 
         return Object.keys(localStorage);
     }
@@ -103,6 +110,16 @@ class Lilly {
     }
     push() {}
     pull() {}
+    restore(){
+        if (!this.connected) return false;
+    }
+    undo(){
+        if (!this.connected) return false;
+    }
+    fixate(){
+        if (!this.connected) return false;
+    }
+
         
     drop() : void {
 
