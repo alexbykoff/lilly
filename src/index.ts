@@ -13,7 +13,7 @@ class Lilly {
     // Creates new instance of database with a name. 
     // Name becomes a prefix for database entries.
     constructor(public name: string = '', public access: string = '') {
-        this.name.length ? this.name += '__': this.name = "__";
+        this.name.length ? this.name += '__' : this.name = "__";
         this.access === 'readonly' && (this.readonly = true);
     }
 
@@ -24,7 +24,7 @@ class Lilly {
 
         try {
             localStorage.setItem("null", "null");
-            localStorage.removeItem("null");            
+            localStorage.removeItem("null");
         } catch (e) {
             return typeof callback == 'function' ? callback(e) : false;
         }
@@ -39,7 +39,7 @@ class Lilly {
 
     // Saves data into storage in JSON object format.
     // Silently logs to console if error occurs.
-    save(key: string, data: any) : void {
+    save(key: string, data: any): void {
 
         if (this.readonly) return;
         // Objectifying data to trap null and undefined data
@@ -52,7 +52,7 @@ class Lilly {
             console && console.log("Failed to save data. Storage is either full or out of reach.");
         }
     }
-    
+
     // Looks for a key in a storage and checks its integrity.
     // If values aren't valid (for example - saved manually or by another script)
     // then attempts to reconstuct data according to this library's format. 
@@ -60,7 +60,7 @@ class Lilly {
 
         let data: any;
         try {
-            data = JSON.parse(localStorage.getItem(this.name + key));                                    
+            data = JSON.parse(localStorage.getItem(this.name + key));
         } catch (e) {
             // If parse fails then parse it manually        
             if (localStorage[key]) {
@@ -74,9 +74,9 @@ class Lilly {
 
         if (data === null) return fallback;
         // Doublecheck data integrity
-        if (typeof data === 'object' && data._v !== 'undefined') {            
+        if (typeof data === 'object' && data._v !== 'undefined') {
             return data._v;
-        }        
+        }
         return fallback;
     }
 
@@ -102,48 +102,48 @@ class Lilly {
     }
 
     // Returns an array of all the keys for the current local storage.
-    findGlobalKeys() : any[]{
+    findGlobalKeys(): any[] {
 
         return Object.keys(localStorage);
     }
 
-    remove(key: string) : void {
+    // This will silently terminate if no such data. No need to catch errors.
+    remove(key: string): void {
 
-        // This will silently terminate if no such data. No need to catch errors.
         if (this.readonly) return;
         localStorage.removeItem(this.name + key);
     }
     push() {}
     pull() {}
-    restore(){
+
+    // Restores the state of the database
+    restore() {
         if (!this.connected || !this.container) return false;
-        for (let item of this.container){
-            this.save(item[0],item[1]);
+        for (let item of this.container) {
+            this.save(item[0], item[1]);
         }
     }
-    undo(){
+    undo() {
         if (!this.connected) return false;
     }
-    
+
     // Constructs a restore point for local storage data.
     // This method fires upon .connect() and also can be called manually.
-    fixate(){
+    fixate() {
 
         if (!this.connected) return false;
         this.container = [];
         let keys: any[] = this.findKeys();
-        for (let key of keys){
-            this.container.push([key,this.find(key)]);
+        for (let key of keys) {
+            this.container.push([key, this.find(key)]);
         }
         console.log(this.container);
-        
+
     }
 
-        
-    drop() : void {
-
-        // Destroys all local storage data associated with this particular database.
-        // Keeps all other keys.
+    // Destroys all local storage data associated with this particular database.
+    // Keeps all other keys.
+    drop(): void {
 
         if (this.readonly) return;
         let keys = this.findKeys();
