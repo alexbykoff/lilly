@@ -1,1 +1,2 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5df19a82eea74ae08fb439b9f8ed0c36)](https://www.codacy.com/app/spbeat/lilly?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tomkallen/lilly&amp;utm_campaign=Badge_Grade)  
 *WIP*
