@@ -46,6 +46,10 @@ class Lilly {
     save(key: string, data: any): boolean {
 
         if (this.readonly) return false;
+        if (!key || !data) {
+            console && console.log("Mising arguments. Save aborted");
+            return false;
+        }
         // Objectifying data to trap null and undefined data
         data = JSON.stringify({
             "_v": data
@@ -57,7 +61,7 @@ class Lilly {
             Storage is either full or out of reach.`);
             return false;
         }
-        return;
+        return true;
     }
 
     // Looks for a key in a storage and checks its integrity.
@@ -120,14 +124,22 @@ class Lilly {
         if (this.readonly) return;
         localStorage.removeItem(this.name + key);
     }
+    
+    // Pushing additional data to the key.
+    // If key exists and not an array then it is converted and data is pushed.
+    // If key does not exist then it is created and new data is push as an array.
     push(key: string, value: any): boolean {
+
         try{
+            // Grab data from staorage if any.
             let data = this.find(key);
+            // If no hey or no data then init an array.
             if (!data) data = [];
             if (Array.isArray(data)){
                 data.push(value);
                 this.save(key, data);
             }
+            //If data exists but not an array the convert it and push.
             else{
                 let _data: any[] = [];
                 _data.push(data);
@@ -140,7 +152,7 @@ class Lilly {
             return false;
         }
 
-        return;
+        return true;
     }
     pull() {}
 
