@@ -176,8 +176,7 @@ class Lilly {
         let keys: any[] = this.findKeys();
         for (let key of keys) {
             this.container.push([key, this.find(key)]);
-        }
-        console.log(this.container);
+        }       
 
     }
 
