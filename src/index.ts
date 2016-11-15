@@ -182,10 +182,16 @@ class Lilly {
 
     // Destroys all local storage data associated with this particular database.
     // Keeps all other keys.
-    drop(): void {
+    drop(): boolean {
 
         if (this.readonly) return;
         let keys = this.findKeys();
-        keys.map(key => localStorage.removeItem(this.name + key));
+        try{ 
+            keys && keys.map(key => localStorage.removeItem(this.name + key));
+        }
+        catch(e){
+            return false;
+        }
+        return true;
     }
 }
