@@ -1,20 +1,23 @@
 class Lilly {
 
     // Sets writing permissions.
-    private readonly: boolean = false;
+    readonly: boolean = false;
 
     // Stores connection state.
     // Needed for `restore`, `undo`  and `fixate` methods.
-    private connected: boolean = false;
+    connected: boolean = false;
 
     // Saves the state of the storage upon connection.
-    private container: any[] = [];
+    container: any[] = [];
 
+    
     // Creates new instance of database with a name. 
     // Name becomes a prefix for database entries.
     constructor(public name: string = '', public access: string = '') {
+
         this.name.length ? this.name += '__' : this.name = "__";
-        this.access === 'readonly' && (this.readonly = true);
+        this.access === 'readonly' && (this.readonly = true);        
+
     }
 
     // Attempts to establish a connection to local storage.
@@ -22,26 +25,27 @@ class Lilly {
     // If connection is successfull then callback is executed.
     connect(callback: any) {
 
-        try {
+        try {            
             localStorage.setItem("null", "null");
             localStorage.removeItem("null");
         } catch (e) {
-            return typeof callback == 'function' ? callback(e) : false;
+            return typeof callback === 'function' ? callback(e) : false;
         }
+
         // Sets state to 'connected' to use additional methods.
         this.connected = true;
 
-        // Stores the state  and restore point of the storage data.
+        // Stores the state and restore point of the storage data.
         this.fixate();
 
-        return typeof callback == 'function' ? callback(null, true) : true;
+        return typeof callback === 'function' ? callback(null, true) : true;
     }
 
     // Saves data into storage in JSON object format.
     // Silently logs to console if error occurs.
-    save(key: string, data: any): void {
+    save(key: string, data: any): boolean {
 
-        if (this.readonly) return;
+        if (this.readonly) return false;
         // Objectifying data to trap null and undefined data
         data = JSON.stringify({
             "_v": data
@@ -49,14 +53,17 @@ class Lilly {
         try {
             localStorage.setItem(this.name + key, data);
         } catch (e) {
-            console && console.log("Failed to save data. Storage is either full or out of reach.");
+            console && console.log(`Failed to save data.
+            Storage is either full or out of reach.`);
+            return false;
         }
+        return;
     }
 
     // Looks for a key in a storage and checks its integrity.
     // If values aren't valid (for example - saved manually or by another script)
     // then attempts to reconstuct data according to this library's format. 
-    find(key: any, fallback: any = undefined) {
+    find(key: any, fallback: any = false) {
 
         let data: any;
         try {
@@ -113,7 +120,28 @@ class Lilly {
         if (this.readonly) return;
         localStorage.removeItem(this.name + key);
     }
-    push() {}
+    push(key: string, value: any): boolean {
+        try{
+            let data = this.find(key);
+            if (!data) data = [];
+            if (Array.isArray(data)){
+                data.push(value);
+                this.save(key, data);
+            }
+            else{
+                let _data: any[] = [];
+                _data.push(data);
+                _data.push(value);
+                this.save(key, _data);            }
+        }
+        catch(e){
+            console && console.log(`Failed to push data.
+            Storage is either full or out of reach.`);
+            return false;
+        }
+
+        return;
+    }
     pull() {}
 
     // Restores the state of the database
@@ -147,6 +175,6 @@ class Lilly {
 
         if (this.readonly) return;
         let keys = this.findKeys();
-        keys.map(e => localStorage.removeItem(this.name + e));
+        keys.map(key => localStorage.removeItem(this.name + key));
     }
 }
