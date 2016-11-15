@@ -1,4 +1,4 @@
-class Lilly {
+export class Lilly {
 
     // Sets writing permissions.
     readonly: boolean = false;
