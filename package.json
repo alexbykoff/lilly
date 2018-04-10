@@ -17,11 +17,13 @@
     },
     "homepage": "https://github.com/tomkallen/lilly#readme",
     "devDependencies": {
+        "babel-core": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
+        "babel-preset-stage-0": "^6.24.1",
         "gulp": "3.9.1",
+        "gulp-babel": "^7.0.1",
         "gulp-jasmine-browser": "1.7.1",
-        "gulp-typescript": "3.1.2",
         "gulp-watch": "4.3.10",
-        "jasmine": "2.5.2",
-        "typescript": "2.0.9"
+        "jasmine": "2.5.2"
     }
 }

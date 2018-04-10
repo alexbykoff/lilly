@@ -1,24 +1,30 @@
-localStorage.clear();
 afterEach(function() {
-
+    localStorage.clear();
 });
-describe("Lilly.save() method", function() {
-    let db = new Lilly("prefix");
-    db.connect();
+
+describe("LillyStore.save() && .read() methods", function() {
+    let store = new LillyStore();
+    store.connect("test-collection");
     it("can store key:value pair in the local storage", function() {
-        db.save("key", "value");
-        expect(db.find("key")).toContain("value");
+        store.save("key", "value");
+        expect(store.read("key")).toContain("value");
     });
 
     it("can store objects", function() {
         let obj = { key: 1000 };
-        db.save("obj", obj);
-        expect(db.find("obj")).toEqual(obj);
+        store.save("obj", obj);
+        expect(store.read("obj")).toEqual(obj);
     });
 
     it("can store arrays", function() {
         let arr = [1, 2, false, "string", [3, 4]];
-        db.save("arr", arr);
-        expect(db.find("arr")).toEqual(arr);
+        store.save("arr", arr);
+        expect(store.read("arr")).toEqual(arr);
     });
-})
+
+    it("can store null", function() {
+        let value = null;
+        store.save("null", value);
+        expect(store.read("null")).toEqual(null);
+    });
+});
