@@ -3,8 +3,8 @@ afterEach(function() {
 });
 
 describe("LillyStore.save() && .read() methods", function() {
-    let store = new LillyStore();
-    store.connect("test-collection");
+    let store = new LillyStore("test-collection");
+    //store.connect("test-collection");
 
     it("can store key:value pair", function() {
         store.save("key", "value");

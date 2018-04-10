@@ -4,42 +4,39 @@ class LillyStore {
     store = {};
     readonly = false;
     collectionId = "";
-    connected = false;
+
+    constructor(collection) {
+        this.connect(collection);
+    }
 
     connect(collectionId = invokeError("no_collection"), callback) {
-        if (this.connected) return;
         verifyLocalStorage();
         this.collectionId = PREFIX + collectionId;
-        const data = readFromStorage(collectionId);
+        const updatedStore = readFromStorage(collectionId);
         this.connected = true;
-        if (data === null) return this.store;
-        this.store = { ...data };
-        return data;
+        if (updatedStore === null) return { ...this.store };
+        this.store = { ...updatedStore };
+        return updatedStore;
     }
 
     save(id = invokeError("no_save_args"), data = invokeError("no_save_args")) {
-        if (!this.connected) invokeError("not_connected_yet");
         const updatedStore = { ...this.store, [id]: data };
         updateStorage(this.collectionId, updatedStore);
         this.store = { ...updatedStore };
-        return data;
+        return updatedStore;
     }
 
     read(id) {
-        if (!this.connected) invokeError("not_connected_yet");
-        if (!id in this.store) return null;
-        return this.store[id];
+        return id in this.store ? this.store[id] : null;
     }
 
     drop() {
-        if (!this.connected) invokeError("not_connected_yet");
         localStorage.removeItem(this.collectionId);
         this.store = {};
         return true;
     }
 
     remove(id) {
-        if (!this.connected) invokeError("not_connected_yet");
         if (!id in this.store) return false;
         const updatedStore = { ...this.store };
         delete updatedStore[id];
@@ -60,9 +57,6 @@ function invokeError(code) {
             errorMessage =
                 "Could not connect to local storage. It is either full or not available";
             break;
-        case "not_connected_yet":
-            errorMessage = "Collection is not connected";
-            break;
         case "no_save_args":
             errorMessage =
                 ".save() expects two arguments - `<string> id, data`";
@@ -75,7 +69,7 @@ function updateStorage(collectionId, data) {
     try {
         localStorage.setItem(collectionId, JSON.stringify(data));
     } catch (error) {
-        invokeError(error);
+        invokeError("no_collection");
     }
 }
 
