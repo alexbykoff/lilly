@@ -1,10 +1,14 @@
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 const PREFIX = "li_";
 
 class LillyStore {
-    store = {};
-    readonly = false;
-    collectionId = "";
-    connected = false;
+    constructor() {
+        this.store = {};
+        this.readonly = false;
+        this.collectionId = "";
+        this.connected = false;
+    }
 
     connect(collectionId = invokeError("no_collection"), callback) {
         if (this.connected) return;
@@ -13,15 +17,15 @@ class LillyStore {
         const data = readFromStorage(collectionId);
         this.connected = true;
         if (data === null) return this.store;
-        this.store = { ...data };
+        this.store = _extends({}, data);
         return data;
     }
 
     save(id = invokeError("no_save_args"), data = invokeError("no_save_args")) {
         if (!this.connected) invokeError("not_connected_yet");
-        const updatedStore = { ...this.store, [id]: data };
+        const updatedStore = _extends({}, this.store, { [id]: data });
         updateStorage(this.collectionId, updatedStore);
-        this.store = { ...updatedStore };
+        this.store = _extends({}, updatedStore);
         return data;
     }
 
@@ -41,10 +45,10 @@ class LillyStore {
     remove(id) {
         if (!this.connected) invokeError("not_connected_yet");
         if (!id in this.store) return false;
-        const updatedStore = { ...this.store };
+        const updatedStore = _extends({}, this.store);
         delete updatedStore[id];
         updateStorage(this.collectionId, updatedStore);
-        this.store = { ...updatedStore };
+        this.store = _extends({}, updatedStore);
         return updatedStore;
     }
 }
@@ -53,19 +57,16 @@ function invokeError(code) {
     let errorMessage = `Something is not right\n${code}`;
     switch (code) {
         case "no_collection":
-            errorMessage =
-                "Collection name is not provided. This argument is needed to connect to collection or create a new one";
+            errorMessage = "Collection name is not provided. This argument is needed to connect to collection or create a new one";
             break;
         case "no_connection":
-            errorMessage =
-                "Could not connect to local storage. It is either full or not available";
+            errorMessage = "Could not connect to local storage. It is either full or not available";
             break;
         case "not_connected_yet":
             errorMessage = "Collection is not connected";
             break;
         case "no_save_args":
-            errorMessage =
-                ".save() expects two arguments - `<string> id, data`";
+            errorMessage = ".save() expects two arguments - `<string> id, data`";
             break;
     }
     throw new Error(`Lilly error: ${errorMessage}`);

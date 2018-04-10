@@ -5,7 +5,8 @@ afterEach(function() {
 describe("LillyStore.save() && .read() methods", function() {
     let store = new LillyStore();
     store.connect("test-collection");
-    it("can store key:value pair in the local storage", function() {
+
+    it("can store key:value pair", function() {
         store.save("key", "value");
         expect(store.read("key")).toContain("value");
     });
@@ -26,5 +27,13 @@ describe("LillyStore.save() && .read() methods", function() {
         let value = null;
         store.save("null", value);
         expect(store.read("null")).toEqual(null);
+    });
+
+    it("should throw Error when no arguments provided for save()", function() {
+        expect(() => store.save()).toThrow(
+            new Error(
+                "Lilly error: .save() expects two arguments - `<string> id, data`"
+            )
+        );
     });
 });
